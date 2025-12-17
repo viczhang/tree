@@ -7,7 +7,7 @@ const App: React.FC = () => {
   const [rotation, setRotation] = useState<number>(0);
   const [showUI, setShowUI] = useState<boolean>(false);
   const [text, setText] = useState<string>("圣诞快乐");
-  const [textSize, setTextSize] = useState<number>(240);
+  const [textSize, setTextSize] = useState<number>(120);
 
   // Mouse interaction for rotation
   useEffect(() => {
