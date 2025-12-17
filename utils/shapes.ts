@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 const COUNT = 18000; // Reduced from 25000 for a less dense, more magical feel
 
-export const generateParticles = () => {
+export const generateParticles = (text: string = "MERRY\nCHRISTMAS", textSize: number = 120) => {
   const treeData: Float32Array = new Float32Array(COUNT * 3);
   const galaxyData: Float32Array = new Float32Array(COUNT * 3);
   const textData: Float32Array = new Float32Array(COUNT * 3);
@@ -26,14 +26,19 @@ export const generateParticles = () => {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'white';
-    // Changed 900 to Bold (less heavy) and reduced size slightly for cleaner definition
-    ctx.font = 'bold 120px "Times New Roman", serif';
+    // Use a font stack that supports unicode (Chinese, etc) while keeping the Serif look
+    ctx.font = `bold ${textSize}px "Times New Roman", "Songti SC", "SimSun", "Noto Serif SC", serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
-    // Adjust spacing to fit
-    ctx.fillText('MERRY', width / 2, height / 2 - 70);
-    ctx.fillText('CHRISTMAS', width / 2, height / 2 + 70);
+    const lines = text.split('\n');
+    const lineHeight = textSize * 1.2;
+    // Calculate start Y to center the block of text vertically
+    const startY = height / 2 - ((lines.length - 1) * lineHeight) / 2;
+
+    lines.forEach((line, index) => {
+      ctx.fillText(line.toUpperCase(), width / 2, startY + (index * lineHeight));
+    });
     
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;

@@ -7,6 +7,8 @@ import { VisualMode } from '../types';
 interface MagicParticlesProps {
   mode: VisualMode;
   rotationStrength: number;
+  text?: string;
+  textSize?: number;
 }
 
 interface ParticleData {
@@ -160,8 +162,8 @@ const ParticleLayer: React.FC<ParticleLayerProps> = ({
   );
 };
 
-const MagicParticles: React.FC<MagicParticlesProps> = ({ mode, rotationStrength }) => {
-  const data = useMemo(() => generateParticles(), []);
+const MagicParticles: React.FC<MagicParticlesProps> = ({ mode, rotationStrength, text, textSize }) => {
+  const data = useMemo(() => generateParticles(text, textSize), [text, textSize]);
 
   return (
     <group>

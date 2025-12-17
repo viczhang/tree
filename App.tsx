@@ -6,6 +6,8 @@ const App: React.FC = () => {
   const [mode, setMode] = useState<VisualMode>(VisualMode.TREE);
   const [rotation, setRotation] = useState<number>(0);
   const [showUI, setShowUI] = useState<boolean>(false);
+  const [text, setText] = useState<string>("圣诞快乐");
+  const [textSize, setTextSize] = useState<number>(240);
 
   // Mouse interaction for rotation
   useEffect(() => {
@@ -41,7 +43,7 @@ const App: React.FC = () => {
       className="relative w-screen h-screen overflow-hidden bg-black cursor-crosshair select-none"
       onClick={handleToggleMode}
     >
-      <Experience mode={mode} rotation={rotation} />
+      <Experience mode={mode} rotation={rotation} text={text} textSize={textSize} />
       
       {/* Info/Reveal Button */}
       <button 
@@ -58,7 +60,7 @@ const App: React.FC = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
         </svg>
         <span className={`absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-1 bg-black/60 backdrop-blur text-xs text-white rounded transition-all duration-300 whitespace-nowrap ${showUI ? 'opacity-0 translate-x-4 pointer-events-none' : 'opacity-0 group-hover:opacity-100'}`}>
-          Hold to see info
+          Hold to see info & settings
         </span>
       </button>
 
@@ -77,6 +79,43 @@ const App: React.FC = () => {
           <p className="mt-4 text-xl text-blue-100 opacity-90 font-light tracking-wide">
              Click anywhere to transform
           </p>
+
+          {/* Config Inputs */}
+          <div className="mt-8 flex gap-4 pointer-events-auto" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
+            {/* Text Input */}
+            <div>
+              <label className="block text-xs text-white/50 mb-2 uppercase tracking-wider font-bold">Customize Text</label>
+              <input 
+                type="text" 
+                defaultValue={text.replace(/\n/g, '\\n')}
+                onBlur={(e) => setText(e.target.value.replace(/\\n/g, '\n'))} 
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                      setText((e.target as HTMLInputElement).value.replace(/\\n/g, '\n'));
+                      (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                className="bg-white/10 border border-white/20 rounded px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-amber-400 focus:bg-white/20 transition-all w-48 backdrop-blur-sm"
+                placeholder="e.g. 圣诞\n快乐"
+              />
+              <p className="text-[10px] text-white/30 mt-2 pl-1">
+                Use <code className="bg-white/10 px-1 rounded text-white/50">\n</code> for new lines.
+              </p>
+            </div>
+
+            {/* Size Input */}
+            <div>
+              <label className="block text-xs text-white/50 mb-2 uppercase tracking-wider font-bold">Size (px)</label>
+              <input 
+                type="number" 
+                value={textSize}
+                min={20}
+                max={400}
+                onChange={(e) => setTextSize(Number(e.target.value))}
+                className="bg-white/10 border border-white/20 rounded px-4 py-2 text-white placeholder-white/30 focus:outline-none focus:border-amber-400 focus:bg-white/20 transition-all w-24 backdrop-blur-sm"
+              />
+            </div>
+          </div>
         </div>
         
         {/* Mode Indicator - Slides up from bottom */}

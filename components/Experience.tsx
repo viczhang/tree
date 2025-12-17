@@ -8,18 +8,20 @@ import { VisualMode } from '../types';
 interface ExperienceProps {
   mode: VisualMode;
   rotation: number;
+  text: string;
+  textSize: number;
 }
 
-const Experience: React.FC<ExperienceProps> = ({ mode, rotation }) => {
+const Experience: React.FC<ExperienceProps> = ({ mode, rotation, text, textSize }) => {
   return (
     <div className="fixed inset-0 bg-black">
-      <Canvas camera={{ position: [0, 0, 7], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 14], fov: 45 }}>
         <color attach="background" args={['#020202']} />
         
         <ambientLight intensity={0.5} />
         
         <Suspense fallback={null}>
-          <MagicParticles mode={mode} rotationStrength={rotation} />
+          <MagicParticles mode={mode} rotationStrength={rotation} text={text} textSize={textSize} />
         </Suspense>
 
         <EffectComposer>
@@ -32,7 +34,7 @@ const Experience: React.FC<ExperienceProps> = ({ mode, rotation }) => {
           />
         </EffectComposer>
 
-        <OrbitControls enableZoom={true} enablePan={false} maxDistance={15} minDistance={2} />
+        <OrbitControls enableZoom={true} enablePan={false} maxDistance={30} minDistance={2} />
       </Canvas>
     </div>
   );
