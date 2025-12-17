@@ -20,13 +20,17 @@ const App: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Manual toggle
-  const handleToggleMode = () => {
-    setMode((prev) => {
-      if (prev === VisualMode.TREE) return VisualMode.GALAXY;
-      if (prev === VisualMode.GALAXY) return VisualMode.TEXT;
-      return VisualMode.TREE;
-    });
+  // Handle background click: close UI if open, otherwise toggle mode
+  const handleBackgroundClick = () => {
+    if (showUI) {
+      setShowUI(false);
+    } else {
+      setMode((prev) => {
+        if (prev === VisualMode.TREE) return VisualMode.GALAXY;
+        if (prev === VisualMode.GALAXY) return VisualMode.TEXT;
+        return VisualMode.TREE;
+      });
+    }
   };
 
   const getModeColor = (m: VisualMode) => {
@@ -41,26 +45,38 @@ const App: React.FC = () => {
   return (
     <div 
       className="relative w-screen h-screen overflow-hidden bg-black cursor-crosshair select-none"
-      onClick={handleToggleMode}
+      onClick={handleBackgroundClick}
     >
       <Experience mode={mode} rotation={rotation} text={text} textSize={textSize} />
       
-      {/* Info/Reveal Button */}
+      {/* Info/Settings Button */}
       <button 
-        className="absolute top-6 left-6 z-50 p-3 rounded-full bg-white/10 border border-white/20 text-white/80 hover:bg-white/20 hover:text-white backdrop-blur-md transition-all duration-300 pointer-events-auto shadow-[0_0_15px_rgba(0,0,0,0.5)] group active:scale-95"
-        onMouseDown={(e) => { e.stopPropagation(); setShowUI(true); }}
-        onMouseUp={(e) => { e.stopPropagation(); setShowUI(false); }}
-        onMouseLeave={() => setShowUI(false)}
-        onTouchStart={(e) => { e.stopPropagation(); setShowUI(true); }}
-        onTouchEnd={(e) => { e.stopPropagation(); setShowUI(false); }}
-        onClick={(e) => e.stopPropagation()}
-        aria-label="Show Controls"
+        className={`absolute top-6 left-6 z-50 p-3 rounded-full border backdrop-blur-md transition-all duration-300 pointer-events-auto shadow-[0_0_15px_rgba(0,0,0,0.5)] group active:scale-95 ${
+          showUI 
+            ? 'bg-white text-black border-white' 
+            : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20 hover:text-white'
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowUI(!showUI);
+        }}
+        aria-label="Toggle Settings"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+          {showUI ? (
+             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          ) : (
+             <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+          )}
         </svg>
-        <span className={`absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-1 bg-black/60 backdrop-blur text-xs text-white rounded transition-all duration-300 whitespace-nowrap ${showUI ? 'opacity-0 translate-x-4 pointer-events-none' : 'opacity-0 group-hover:opacity-100'}`}>
-          Hold to see info & settings
+        
+        {/* Tooltip */}
+        <span 
+          className={`absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-1 bg-black/60 backdrop-blur text-xs text-white rounded transition-all duration-300 whitespace-nowrap ${
+            showUI ? 'opacity-0 translate-x-4 pointer-events-none' : 'opacity-0 group-hover:opacity-100'
+          }`}
+        >
+          Settings
         </span>
       </button>
 
@@ -81,7 +97,11 @@ const App: React.FC = () => {
           </p>
 
           {/* Config Inputs */}
-          <div className="mt-8 flex gap-4 pointer-events-auto" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
+          <div 
+            className={`mt-8 flex gap-4 pointer-events-auto transition-opacity duration-300 ${showUI ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            onMouseDown={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Text Input */}
             <div>
               <label className="block text-xs text-white/50 mb-2 uppercase tracking-wider font-bold">Customize Text</label>

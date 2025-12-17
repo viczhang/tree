@@ -58,8 +58,9 @@ export const generateParticles = (text: string = "MERRY\nCHRISTMAS", textSize: n
     const i3 = i * 3;
 
     // --- Tree Shape (Cone Spiral) ---
-    const y = (Math.random() * 5) - 2.5; 
-    const radiusAtHeight = Math.max(0, (2.5 - y) * 0.5); 
+    // Shifted down by 0.5 to visually center the Tree + Star composition
+    const y = (Math.random() * 5) - 3.0; 
+    const radiusAtHeight = Math.max(0, (2.0 - y) * 0.5); 
     const angle = y * 15 + Math.random() * Math.PI * 2; 
     
     const scatter = Math.random() * 0.15; // Volume scatter

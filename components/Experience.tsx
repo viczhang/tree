@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import MagicParticles from './MagicParticles';
+import TopStar from './TopStar';
 import { VisualMode } from '../types';
 
 interface ExperienceProps {
@@ -22,6 +23,7 @@ const Experience: React.FC<ExperienceProps> = ({ mode, rotation, text, textSize 
         
         <Suspense fallback={null}>
           <MagicParticles mode={mode} rotationStrength={rotation} text={text} textSize={textSize} />
+          <TopStar mode={mode} />
         </Suspense>
 
         <EffectComposer>
